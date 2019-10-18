@@ -2,13 +2,34 @@ require 'json'
 require 'sinatra'
 require 'line/bot'
 require 'dotenv/load'
-def client
+require 'mqtt'
+require 'uri'
+
+class App < Sinatra::Base
+
+  def client
     @client ||= Line::Bot::Client.new { |config|
       config.channel_secret = ENV['LINE_CHANNEL_SECRET']
       config.channel_token = ENV['LINE_CHANNEL_TOKEN']
     }
-end
-post '/callback' do
+  end
+
+  uri = URI.parse ENV['CLOUDMQTT_URL']
+
+  conn_opts = {
+    remote_host: uri.host,
+    remote_port: uri.port,
+    username: uri.user,
+    password: uri.password
+  }
+
+  topic = uri.path[1, uri.path.length]
+
+  get '/' do
+    'Hello world!!'
+  end
+
+  post '/callback' do
     body = request.body.read
 
     signature = request.env['HTTP_X_LINE_SIGNATURE']
@@ -24,9 +45,22 @@ post '/callback' do
         case event.type
         when Line::Bot::Event::MessageType::Text
 
+        case event.message['text']
+          when 'LEDON'
+            message = 'à»Ô´ä¿áÅéÇ'
+          when 'LEDOFF'
+            message = '»Ô´ä¿áÅéÇ'
+          else
+            message = '¤ÓÊÑè§ÍĞäÃ ©Ñ¹äÁèÃéÙ¨Ñ¡'
+          end
+
+          MQTT::Client.connect(conn_opts) do |c|
+            c.publish(topic, event.message['text'])
+          end
+
           message = {
             type: 'text',
-            text: event.message['text']
+            text: message
           }
 
           client.reply_message(event['replyToken'], message)
@@ -35,4 +69,6 @@ post '/callback' do
 
     'OK'
     end
+  end
+
 end
