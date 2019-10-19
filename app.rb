@@ -9,8 +9,8 @@ class App < Sinatra::Base
 
   def client
     @client ||= Line::Bot::Client.new { |config|
-      config.channel_secret = ENV['2ee3dc668f9a9524da6b4c7dd682f78d']
-      config.channel_token = ENV['GPdeWvO+r1mR5VFdjxDjqChWhJ1L8xFauwTD1TLXTcqc28Ou3532ewvUE7BuQaTePjT7KECdsTMLH7TuhJj/8P2o2Jb2WZuCahmgvF0/mOFb256Mjww+D808WGZAOyHFwt3CxBrEE5Kcg/QK7smaTAdB04t89/1O/w1cDnyilFU=']
+      config.channel_secret = ENV['']
+      config.channel_token = ENV['']
     }
   end
 
