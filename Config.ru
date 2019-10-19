@@ -1,4 +1,4 @@
 # config.ru
 
-require_relative './app'
-run ApplicationController
+require_relative 'app'
+run app
