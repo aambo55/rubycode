@@ -1,2 +1,4 @@
-require './app.rb'
-run app
+# config.ru
+
+require "./app"
+run App
